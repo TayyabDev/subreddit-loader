@@ -12,6 +12,7 @@ class Reddit extends React.Component {
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.loadMore = this.loadMore.bind(this)
     }
 
 
@@ -19,8 +20,8 @@ class Reddit extends React.Component {
         // fetch league
         fetch(`https://www.reddit.com/r/${this.state.subreddit}/hot.json?limit=10`).then(response => response.json())
         .then(response => response.data.children).then(child => {
-            const x = child.map(x => <RedditThread key={shortid.generate()} title={x.data.title} date='2020' link={x.data.url} upvotes={x.data.ups} stickied={x.data.stickied}/>)
-            console.log(JSON.stringify(child.data))
+            const x = child.map(x => <RedditThread key={shortid.generate()} title={x.data.title} date='2020' link={x.data.url} upvotes={x.data.ups} stickied={x.data.stickied} img={x.data.thumbnail}/>)
+            console.log(JSON.stringify(child))
             this.setState({
                 posts: x
             })
@@ -43,7 +44,11 @@ class Reddit extends React.Component {
 
     handleSubmit(e){
         e.preventDefault()
-        console.log('here')
+        if(!this.state.subreddit){
+            alert("Select a valid subreddit")
+            return
+        }
+        
         fetch(`https://www.reddit.com/r/${this.state.subreddit}/hot.json?limit=10`).then(response => response.json())
         .then(response => response.data.children).then(child => {
             const x = child.map(x => <RedditThread key={shortid.generate()} title={x.data.title} date='2020' link={x.data.url} upvotes={x.data.ups} stickied={x.data.stickied}/>)
@@ -55,16 +60,40 @@ class Reddit extends React.Component {
         })
     }
 
+    loadMore(e){
+        e.preventDefault()
+        let newPostsLength = this.state.posts.length + 10;
+        console.log(newPostsLength)
+        fetch(`https://www.reddit.com/r/${this.state.subreddit}/hot.json?limit=${newPostsLength}`).then(response => response.json()).then(response => response.data.children).then(child => {
+            const x = child.map(x => <RedditThread key={shortid.generate()} title={x.data.title} date='2020' link={x.data.url} upvotes={x.data.ups} stickied={x.data.stickied}/>)
+            console.log(JSON.stringify(child.data))
+            this.setState({
+                posts: x,
+            })
+        })
+
+
+    }
+
 
     render(){
         return(
             <div>
-                <form onSubmit={this.handleSubmit}>
-                    <input type="text" onChange={this.handleChange} name="subreddit" value={this.state.subreddit} placeholder="leagueoflegends"/>
-                    <button>Show Posts</button>
-                </form>
-                <h1>Showing posts for: {this.state.subredditLabel}</h1>
+                <div className="form-row align-items-center">
+                    <form onSubmit={this.handleSubmit}>
+                        <div className="col">
+                            <input className="col-auto" type="search" onChange={this.handleChange} name="subreddit" value={this.state.subreddit} placeholder="leagueoflegends"/>
+                        </div>
+                        <div className="col">
+                            <button className="btn btn-outline-primary">Show Posts</button>
+                        </div>
+                    </form>
+                </div>
+                <h1 class="text-center">Showing posts for: /r/{this.state.subredditLabel}</h1>
                 {this.state.posts}
+                <form className="d-flex justify-content-center" onSubmit={this.loadMore}>
+                    <button className="btn btn-outline-primary">Load more</button>
+                </form>
             </div>
         )
     }

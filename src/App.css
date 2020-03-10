@@ -1,6 +1,8 @@
 .App {
   text-align: center;
-  background-color: #E98074
+  background-color: #501b1d;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+
 }
 
 .App-logo {
@@ -16,7 +18,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 200vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,4 +38,16 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.RedditThread {
+  width: 500px;
+  border: 5px solid  black;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  /* font-style: conoso */ 
+   font-family: "Comic Sans MS", cursive, sans-serif;
+
+
 }
